@@ -26,7 +26,7 @@ Module.register('MMM-Pins',{
 				payload.actions[pinConfig.notification] = {notification: pinConfig.notification, prettyName: pinConfig.prettyName};
 			}
 			Log.log(payload.module);
-			Log.log(payload.actions.toString());
+			Log.log(payload.actions);
 			this.sendNotification("REGISTER_API", payload);
 			return;
 		}
@@ -40,7 +40,20 @@ Module.register('MMM-Pins',{
 				break;
 			}
 		}
-	},	
+	},
+	socketNotificationReceived: function(notification, payload) {
+		for (let index = 0; index < this.config.pinConfiguration.length; ++index) {
+                        let pinConfig = this.config.pinConfiguration[index];
+			if(pinConfig.notification === notification && pinConfig.direction === "in") {
+				if(pinConfig.sound && !isPlaying){
+					this.sendNotification('PLAY_SOUND', pinConfig);
+				} else if(pinConfig.sound) {
+					this.sendNotification('STOP_SOUND', pinConfig);
+				}
+				break;
+			}
+		}
+	},
 	start: function() {
 		Log.info('Starting module: ' + this.name);
 	}
