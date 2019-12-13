@@ -27,8 +27,8 @@ module.exports = NodeHelper.create({
 			}
 			if (pinConfig.direction === "in") {
           		self.gpio[String(pinConfig.pin)] = new Gpio(pinConfig.pin, pinConfig.direction, "both");
-				self.gpio[String(pinConfig.pin)].watch(() => {
-					self.sendSocketNotification(pinConfig.notification)
+				self.gpio[String(pinConfig.pin)].watch((err, value) => {
+					self.sendSocketNotification(pinConfig.notification, value)
 				});
 			}	
 		}

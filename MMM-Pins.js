@@ -45,7 +45,7 @@ Module.register('MMM-Pins',{
 		for (let index = 0; index < this.config.pinConfiguration.length; ++index) {
                         let pinConfig = this.config.pinConfiguration[index];
 			if(pinConfig.notification === notification && pinConfig.direction === "in") {
-				if(pinConfig.sound && !isPlaying){
+				if(pinConfig.sound && payload === 0){
 					this.sendNotification('PLAY_SOUND', pinConfig);
 				} else if(pinConfig.sound) {
 					this.sendNotification('STOP_SOUND', pinConfig);
