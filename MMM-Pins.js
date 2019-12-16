@@ -44,7 +44,7 @@ Module.register('MMM-Pins',{
 	},
 	socketNotificationReceived: function(notification, payload) {
 		for (let index = 0; index < this.config.pinConfiguration.length; ++index) {
-            let pinConfig = this.config.pinConfiguration[index];
+            let pinConfig = {...this.config.pinConfiguration[index]};
             if (!pinConfig.sound) {
             	break;
             }
@@ -52,7 +52,9 @@ Module.register('MMM-Pins',{
 				if (Array.isArray(pinConfig.sound)) {
 					const pinConfigSounds = pinConfig.sound;
 					pinConfig.sound = pinConfigSounds[this.soundIndex];
-					this.soundIndex = this.soundIndex === pinConfigSounds.length ? 0 : this.soundIndex++;
+					if (payload === 0) {
+					    this.soundIndex = this.soundIndex + 1 >= pinConfigSounds.length ? 0 : this.soundIndex + 1;
+					}
 				}
 				if(payload === 0){
 					this.sendNotification('PLAY_SOUND', pinConfig);
