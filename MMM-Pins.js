@@ -10,7 +10,8 @@ Module.register('MMM-Pins',{
 	requiresVersion: "2.1.0",
 	defaults: {
 		pinConfiguration: []		
-	},	
+	},
+	soundIndex: 0,
 	
 	// Override notification handler.
 	notificationReceived: function(notification, payload) {
@@ -43,11 +44,19 @@ Module.register('MMM-Pins',{
 	},
 	socketNotificationReceived: function(notification, payload) {
 		for (let index = 0; index < this.config.pinConfiguration.length; ++index) {
-                        let pinConfig = this.config.pinConfiguration[index];
+            let pinConfig = this.config.pinConfiguration[index];
+            if (!pinConfig.sound) {
+            	break;
+            }
 			if(pinConfig.notification === notification && pinConfig.direction === "in") {
-				if(pinConfig.sound && payload === 0){
+				if (Array.isArray(pinConfig.sound)) {
+					const pinConfigSounds = pinConfig.sound;
+					pinConfig.sound = pinConfigSounds[this.soundIndex];
+					this.soundIndex = this.soundIndex === pinConfigSounds.length ? 0 : this.soundIndex++;
+				}
+				if(payload === 0){
 					this.sendNotification('PLAY_SOUND', pinConfig);
-				} else if(pinConfig.sound) {
+				} else {
 					this.sendNotification('STOP_SOUND', pinConfig);
 				}
 				break;
